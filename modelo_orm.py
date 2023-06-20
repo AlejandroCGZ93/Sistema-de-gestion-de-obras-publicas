@@ -16,42 +16,42 @@ class BaseModel(Model):
 #se crea la tabla obra y los atributos son campos dentro de la tabla y lo que esta despues del igual el tipo de dato que va tomar dentro de la base de datos
 class Entorno(BaseModel):
     nombre_entorno=CharField(unique=True)
+
+class AreaResponsable(BaseModel):
+    nombre_Responsable = CharField(unique=True)
+
+class TipoObra(BaseModel):
+    nombre_Tipo = CharField(unique=True)
+
+class Barrio(BaseModel):
+    nombre_Barrio = CharField(unique=True)
+
 class Obra(BaseModel):    
     entorno=ForeignKeyField(Entorno)
     nombre=CharField()
     etapa = CharField()
-    tipo = CharField()
-    area_responsable = CharField()
+    tipo = ForeignKeyField(TipoObra)
+    area_responsable = ForeignKeyField(AreaResponsable)
     descripcion=CharField()
     monto_contrato=CharField()
     comuna=CharField()
-    barrio = CharField()
+    barrio = ForeignKeyField(Barrio)
     direccion=CharField()
     lat=CharField()
     lng=CharField()
     fecha_inicio = DateField()
     fecha_fin_inicial = DateField()
     plazo_meses = CharField()
-    porcentaje_avance = CharField()
-    imagen_1=CharField()
-    imagen_2=CharField()
-    imagen_3=CharField()
-    imagen_4=CharField()
+    porcentaje_avance = CharField()    
     licitacion_oferta_empresa=CharField()
     licitacion_anio=CharField()
     tipo_contratacion = CharField()
     nro_contratacion = CharField()
     cuit_contratista=CharField()
-    beneficiario=CharField()
-    mano_obra = CharField()
-    compromiso = CharField()    
-    destacada = CharField()
-    ba_elige = CharField()
+    beneficiarios=CharField()   
     link_interno = CharField()
     pliego_descarga = CharField()
-    nro_expediente = CharField()
-    estudio_ambiental_descarga = CharField()    
-    financiamiento = CharField()   
+    
     
     def __str__(self):
         return self.nombre
