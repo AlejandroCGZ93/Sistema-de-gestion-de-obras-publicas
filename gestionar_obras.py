@@ -15,22 +15,24 @@ class GestionarObra():
         if cls.df is False:
             exit()
         
-        print(cls.df.head()) 
+        """print(cls.df.head()) 
         print(cls.df.count())
-        print(cls.df.columns)     
+        print(cls.df.columns) """    
 
     @classmethod
     def conectar_db(cls):
         
        db.connect()
+       
 
     @classmethod
     def mapear_orm(cls):
         try:
-            db.create_tables([Entorno, AreaResponsable,TipoObra,Barrio,Obra]) # se pasa como argumento una clase o una lista de clases (que son las tablas) que se quiere crear dentro de la base de datos este obra hace referencia a la clase obra del archivo modelo_orm
+            db.create_tables([Entorno,Etapa, AreaResponsable,TipoObra,Barrio,TipoContratacion, Obra]) # se pasa como argumento una clase o una lista de clases (que son las tablas) que se quiere crear dentro de la base de datos este obra hace referencia a la clase obra del archivo modelo_orm
         except OperationalError as e:
             print("Se ha generado un error al crear las tablas en la Base de Datos.", e)
             exit()
+        print("Se han creado la stablas en la base de datos")
 
 
     @classmethod
@@ -45,6 +47,15 @@ class GestionarObra():
         cls.data_uniqueA = list(cls.df['area_responsable'].unique())
         
         cls.data_uniqueB = list(cls.df['barrio'].unique())
+
+        cls.data_uniqueEta = list(cls.df['etapa'].unique())
+
+        cls.data_uniqueCo = list(cls.df['contratacion_tipo'].unique())
+
+
+
+        #limpia todas las filas nulas en una sola vez no funciona con esto
+        #cls.df.dropna(inplace=True)
 
     
         
@@ -72,7 +83,7 @@ class GestionarObra():
               
         
 
-       
+      
 
     @classmethod
     def cargar_datos(cls):
@@ -84,44 +95,62 @@ class GestionarObra():
                 print("Error al insertar un nuevo registro en la tabla Entorno", e)
         print("se han persistido los tipos de Entorno en la base de datos")
 
+        for elem in cls.data_uniqueEta:
+            try:
+                Etapa.create(nombre_etapa=elem)
+            except IntegrityError as e:
+                print("Error al insertar un nuevo registro en la tabla Etapa", e)
+        print("se han persistido los tipos de Etapa en la base de datos")
+
         for elem in cls.data_uniqueT:
             try:
                 TipoObra.create(nombre_Tipo=elem)
             except IntegrityError as e:
                 print("Error al insertar un nuevo registro en la tabla Tipo obra", e)
-        print("se han persistido los tipos de Entorno en la base de datos")
+        print("Se han persistido los tipos de Obraen la base de datos")
 
         for elem in cls.data_uniqueA:
             try:
                 AreaResponsable.create(nombre_Responsable=elem)
             except IntegrityError as e:
                 print("Error al insertar un nuevo registro en la tabla Area Responsable", e)
-        print("se han persistido los tipos de Entorno en la base de datos")
+        print("Se han persistido las areas responsables en la base de datos")
 
         for elem in cls.data_uniqueB:
             try:
                 Barrio.create(nombre_Barrio=elem)
             except IntegrityError as e:
-                print("Error al insertar un nuevo registro en la tabla Area Responsable", e)
-        print("se han persistido los tipos de Entorno en la base de datos")
+                print("Error al insertar un nuevo registro en la tabla Barrio", e)
+        print("Se han persistido los barrios en la base de datos")
+
+        for elem in cls.data_uniqueCo:
+            try:
+                TipoContratacion.create(nombre_tcontratacion=elem)
+            except IntegrityError as e:
+                print("Error al insertar un nuevo registro en la tabla tipo de contratacion", e)
+        print("Se han persistido los tipos de contratacion en la base de datos")
 
         for elem in cls.df.values:
             nombre_ent=Entorno.get(Entorno.nombre_entorno== elem[1])
+            nombre_e=Etapa.get(Etapa.nombre_etapa==elem[3])
             nombre_Tip=TipoObra.get(TipoObra.nombre_Tipo== elem[4])
             nombre_Are=AreaResponsable.get(AreaResponsable.nombre_Responsable== elem[5])
             nombre_Bar=Barrio.get(Barrio.nombre_Barrio==elem[9])
+            nombre_con=TipoContratacion.get(TipoContratacion.nombre_tcontratacion==elem[23])
             try:
-                Obra.create(entorno=nombre_ent,nombre=elem[2], etapa = elem[3],tipo = nombre_Tip ,area_responsable = nombre_Are, descripcion=elem[6], monto_contrato=elem[7],comuna=elem[8],barrio = nombre_Bar,direccion=elem[10],lat=elem[11],lng=elem[12],fecha_inicio = elem[13],fecha_fin_inicial = elem[14],plazo_meses = elem[15],porcentaje_avance =elem[16], licitacion_oferta_empresa=elem[21], licitacion_anio=elem[22],tipo_contratacion = elem[23], nro_contratacion = elem[24], cuit_contratista=elem[25],beneficiarios=elem[26],link_interno = elem[31], pliego_descarga = elem[32])
+                Obra.create(entorno=nombre_ent,nombre=elem[2], etapa = nombre_e,tipo = nombre_Tip ,area_responsable = nombre_Are, descripcion=elem[6], monto_contrato=elem[7],comuna=elem[8],barrio = nombre_Bar,direccion=elem[10],lat=elem[11],lng=elem[12],fecha_inicio = elem[13],fecha_fin_inicial = elem[14],plazo_meses = elem[15],porcentaje_avance =elem[16], licitacion_oferta_empresa=elem[21], licitacion_anio=elem[22],tipo_contratacion = nombre_con, nro_contratacion = elem[24], cuit_contratista=elem[25],beneficiarios=elem[26],link_interno = elem[31], pliego_descarga = elem[32])
             except ImportError as e:
                 print("Error al insertar un registro en la tabla viakes.", e)
-        print("los registros se han persistido en la tabla Obras.")
+        print("los registros se han persistido en la tabla Obras.")     
 
     
         
 
     @classmethod
     def nueva_obra(cls):
-       ##busca dentro de la tabla entorno el entrono insertado por teclado
+       #busca dentro de la tabla entorno el entrono insertado por teclado
+       
+
         validarEntorno=None
         encontrado=False
         while not encontrado:
@@ -133,8 +162,21 @@ class GestionarObra():
             except Entorno.DoesNotExist:
                 print("el Entorno ingresado no coincide con los que se encuentran en la base de datos intente nuevamente")        
 
-        Nombre_O=input("ingrese el nombre: ")       
-        Etapa = input("ingrese el estado de la etapa: ")
+        Nombre_O=input("ingrese el nombre: ")  
+
+        ##busca dentro de la tabla Etapa las etapas insertadas por teclado
+        validarEtapa=None
+        eta=False
+        while not eta:
+            estado_Etapa = input("ingrese el estado de la etapa: ")
+            try:
+                validarEtapa=Etapa.get(Etapa.nombre_etapa == estado_Etapa)
+                eta=True
+                estado_Etapa=validarEtapa
+            except Etapa.DoesNotExist:
+                print("la etapa ingresado no coincide con los que se encuentran en la base de datos intente nuevamente")
+
+        
         
         #busca dentro de la tabla Tipo de obra el tipo de obra insertada por teclado
         validarTipo=None
@@ -145,36 +187,38 @@ class GestionarObra():
                 validarTipo=TipoObra.get(TipoObra.nombre_Tipo == Tipo)
                 x=True
                 Tipo=validarTipo
-            except Entorno.DoesNotExist:
+            except TipoObra.DoesNotExist:
                 print("El tipo de obra ingresado no existe intente nuevamente")          
+         
+        Descripcion=input("ingrese una descripcion: ")
         
         #busca dentro de la tabla Area Responsable el area insertada por teclado
-        validarArea= None
-        y=False
-        while not y:
-            Area_responsable = input("ingrese el Área responsable: ")
+        validarArea=None
+        m=False
+        while not m:
+            area_responsable = input("Tipo el area responsable: ")
             try:
-                validarArea=AreaResponsable.get(AreaResponsable.nombre_Responsable == Area_responsable)
-                x=True
-                Area_responsable=validarArea
-            except Entorno.DoesNotExist:
-                print("El Area ingresada no existe intente nuevamente") 
+                validarArea=AreaResponsable.get(AreaResponsable.nombre_Responsable == area_responsable)
+                m=True
+                area_responsable=validarArea
+            except AreaResponsable.DoesNotExist:
+                print("El tipo de area ingresado no existe intente nuevamente")  
         
-        Descripcion=input("ingrese una descripcion: ")
+       
         Monto_contrato=input("ingrese Monto de contrato: ")
         Comuna=input("ingrese la comuna: ")
 
         #busca dentro de la tabla Area Responsable el area insertada por teclado
-        validarBarrio= None
-        z=False
-        while not z:
-            Barrio_nombre = input("ingrese el barrio: ")
+        validarBarrio=None
+        j=False
+        while not j:
+            barrio_nombre = input("Ingrese el Barrio: ")
             try:
-                validarBarrio=Barrio.get(Barrio.nombre_Barrio == Barrio_nombre)
-                x=True
-                Barrio_nombre=validarBarrio
-            except Entorno.DoesNotExist:
-                print("El barrio ingresada no existe intente nuevamente") 
+                validarBarrio=Barrio.get(Barrio.nombre_Barrio == barrio_nombre)
+                j=True
+                barrio_nombre=validarBarrio
+            except Barrio.DoesNotExist:
+                print("El barrio ingresado no existe intente nuevamente")  
         
         Direccion=input("ingrese la direccion: ")
         Lat=input("ingrese la latitud de la obra: ")
@@ -185,7 +229,19 @@ class GestionarObra():
         Porcentaje_avance = input("ingrese el porcentaje de avance: ")  
         Licitacion_oferta_empresa=input("ingrese la licitacion de oferta: ")
         Licitacion_anio=input("ingrese el año de la licitacion: ")
-        Tipo_contratacion = input("ingrese el tipo de contratacion: ")
+        
+        #busca dentro de la tabla Tipo de contratacion el tipo insertada por teclado
+        validarTCon=None
+        tc=False
+        while not tc:
+            Tipo_contratacion = input("ingrese el tipo de contratacion: ")
+            try:
+                validarTCon=TipoContratacion.get(TipoContratacion.nombre_tcontratacion == Tipo_contratacion)
+                tc=True
+                Tipo_contratacion=validarTCon
+            except TipoContratacion.DoesNotExist:
+                print("El tipo de contratacion ingresado no existe intente nuevamente") 
+        
         Nro_contratacion =input("ingrese el numero de la contratacion: ")
         Cuit_contratista=input("ingrese el cuit del contratista: ")
         Beneficiarios=input("ingrese la cantidad de beneficiarios por esta obra: ")
@@ -198,13 +254,13 @@ class GestionarObra():
             
                 entorno=Entorno_nombre,
                 nombre=Nombre_O,
-                etapa = Etapa,
+                etapa = estado_Etapa,
                 tipo = Tipo,
-                area_responsable = Area_responsable,
+                area_responsable = area_responsable,
                 descripcion=Descripcion,
                 monto_contrato=Monto_contrato,
                 comuna=Comuna,
-                barrio = Barrio,
+                barrio = barrio_nombre,
                 direccion=Direccion,
                 lat=Lat,
                 lng=Lng,
@@ -222,7 +278,8 @@ class GestionarObra():
                 pliego_descarga = Pliego_descarga
         )
         
-        Obra.save()
+        obra.save()
+        return obra
 
     @classmethod
     def obtener_indicadores(cls):
@@ -231,22 +288,26 @@ class GestionarObra():
         obras_finalizadas = Obra.select().where(Obra.etapa == "Finalizada").count()
         obras_en_progreso = Obra.select().where(Obra.etapa != "Finalizada").count()   
 
-        indicadores = {
+        cls.indicadores = {
             "obras_totales": obras_totales,
             "obras_finalizadas": obras_finalizadas,
             "obras_en_progreso": obras_en_progreso,
             
             
         }
+        #print(indicadores)
+        return cls.indicadores
 
-        return indicadores
+    
 
 
 #testear
-Tabla=GestionarObra()
+#Tabla=GestionarObra()
 
 #Tabla.extraer_datos()
-Tabla.mapear_orm()
-Tabla.limpiar_datos()
-Tabla.cargar_datos()
-Tabla.nueva_obra()
+#Tabla.mapear_orm()
+#Tabla.limpiar_datos()
+#Tabla.cargar_datos()
+#Tabla.nueva_obra()
+#Tabla.obtener_indicadores()
+

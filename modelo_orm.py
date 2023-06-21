@@ -17,6 +17,9 @@ class BaseModel(Model):
 class Entorno(BaseModel):
     nombre_entorno=CharField(unique=True)
 
+class Etapa(BaseModel):
+    nombre_etapa=CharField(unique=True)
+
 class AreaResponsable(BaseModel):
     nombre_Responsable = CharField(unique=True)
 
@@ -26,10 +29,13 @@ class TipoObra(BaseModel):
 class Barrio(BaseModel):
     nombre_Barrio = CharField(unique=True)
 
+class TipoContratacion(BaseModel):
+    nombre_tcontratacion = CharField(unique=True)
+
 class Obra(BaseModel):    
     entorno=ForeignKeyField(Entorno)
     nombre=CharField()
-    etapa = CharField()
+    etapa = ForeignKeyField(Etapa)
     tipo = ForeignKeyField(TipoObra)
     area_responsable = ForeignKeyField(AreaResponsable)
     descripcion=CharField()
@@ -45,19 +51,20 @@ class Obra(BaseModel):
     porcentaje_avance = CharField()    
     licitacion_oferta_empresa=CharField()
     licitacion_anio=CharField()
-    tipo_contratacion = CharField()
+    tipo_contratacion = ForeignKeyField(TipoContratacion)
     nro_contratacion = CharField()
     cuit_contratista=CharField()
     beneficiarios=CharField()   
     link_interno = CharField()
-    pliego_descarga = CharField()
-    
-    
-    def __str__(self):
-        return self.nombre
+    pliego_descarga = CharField()   
 
-    """def nuevo_proyecto(self):
-        self.etapa = 'Proyecto'
+    def nuevo_proyecto(self):
+        self.etapa=None
+        try:
+            etapa=Etapa.get(nombre_etapa="Proyecto")
+        except Etapa.DoesNotExist:
+            etapa=Etapa.create(nombre_etapa="Proyecto")        
+        
 
     def iniciar_contratacion(self, tipo_contratacion, nro_contratacion):
         self.tipo_contratacion = tipo_contratacion
@@ -88,5 +95,5 @@ class Obra(BaseModel):
         self.porcentaje_avance = 100
 
     def rescindir_obra(self):
-        self.etapa = 'Rescindida'"""
+        self.etapa = 'Rescindida'
 

@@ -1,8 +1,12 @@
-from gestionar_obras import GestionarObra
+from gestionar_obras import *
 
 def main():
-    GestionarObra.conectar_db()
-    GestionarObra.cargar_datos()
+    obras=GestionarObra()
+    obras.extraer_datos()
+    obras.mapear_orm()
+    obras.conectar_db()
+    obras.limpiar_datos()
+    obras.cargar_datos()
 
     while True:
         print("\n===== Menú Principal =====")
@@ -13,16 +17,15 @@ def main():
         opcion = input("Ingrese una opción: ")
 
         if opcion == "1":
-            obra = GestionarObra.nueva_obra()
-            print(f"\nSe ha creado la obra con ID: {obra.id}")
+            obras.nueva_obra()
+            print(f"\nSe ha creado la obra con ID: {obras.id}")
 
         elif opcion == "2":
-            indicadores = GestionarObra.obtener_indicadores()
-            print("\nIndicadores:")
-            print(f"Obras totales: {indicadores['obras_totales']}")
-            print(f"Obras finalizadas: {indicadores['obras_finalizadas']}")
-            print(f"Obras en progreso: {indicadores['obras_en_progreso']}")            
-            print(f"Porcentaje de avance promedio: {indicadores['porcentaje_avance_promedio']}%")
+            obras.obtener_indicadores()
+            print("\n====Indicadores====")
+            print(obras.indicadores)
+                       
+            
 
         elif opcion == "0":
             print("\n¡Hasta luego!")
