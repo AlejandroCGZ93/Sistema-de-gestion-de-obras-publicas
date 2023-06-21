@@ -35,11 +35,7 @@ class GestionarObra():
 
     @classmethod
     def limpiar_datos(cls):
-         # Realizar la limpieza de datos nulos y no accesibles en el DataFrame
-        cls.df=leer_archivo()
-        
-        if cls.df is False:
-            exit() 
+         # Realizar la limpieza de datos nulos y no accesibles en el DataFrame       
 
         # sacar solo los valores unicos
         cls.data_uniqueE = list(cls.df['entorno'].unique())  
@@ -125,17 +121,61 @@ class GestionarObra():
 
     @classmethod
     def nueva_obra(cls):
-       #no se como hacer la busqueda repitiendo en caso de no conseguir algunos valores
-        Entorno_nombre=input("ingrese el nombre del Entorno: ")         
+       ##busca dentro de la tabla entorno el entrono insertado por teclado
+        validarEntorno=None
+        encontrado=False
+        while not encontrado:
+            Entorno_nombre=input("ingrese el nombre del Entorno: ") 
+            try:
+                validarEntorno=Entorno.get(Entorno.nombre_entorno == Entorno_nombre)
+                encontrado=True
+                Entorno_nombre=validarEntorno
+            except Entorno.DoesNotExist:
+                print("el Entorno ingresado no coincide con los que se encuentran en la base de datos intente nuevamente")        
 
         Nombre_O=input("ingrese el nombre: ")       
-        Etapa = input("ingrese el estado de la etapa: ")  
-        Tipo = input("Tipo de obra: ")
-        Area_responsable = input("ingrese el Área responsable: ")
+        Etapa = input("ingrese el estado de la etapa: ")
+        
+        #busca dentro de la tabla Tipo de obra el tipo de obra insertada por teclado
+        validarTipo=None
+        x=False
+        while not x:
+            Tipo = input("Tipo de obra: ")
+            try:
+                validarTipo=TipoObra.get(TipoObra.nombre_Tipo == Tipo)
+                x=True
+                Tipo=validarTipo
+            except Entorno.DoesNotExist:
+                print("El tipo de obra ingresado no existe intente nuevamente")          
+        
+        #busca dentro de la tabla Area Responsable el area insertada por teclado
+        validarArea= None
+        y=False
+        while not y:
+            Area_responsable = input("ingrese el Área responsable: ")
+            try:
+                validarArea=AreaResponsable.get(AreaResponsable.nombre_Responsable == Area_responsable)
+                x=True
+                Area_responsable=validarArea
+            except Entorno.DoesNotExist:
+                print("El Area ingresada no existe intente nuevamente") 
+        
         Descripcion=input("ingrese una descripcion: ")
         Monto_contrato=input("ingrese Monto de contrato: ")
         Comuna=input("ingrese la comuna: ")
-        Barrio = input("ingrese el barrio: ")
+
+        #busca dentro de la tabla Area Responsable el area insertada por teclado
+        validarBarrio= None
+        z=False
+        while not z:
+            Barrio_nombre = input("ingrese el barrio: ")
+            try:
+                validarBarrio=Barrio.get(Barrio.nombre_Barrio == Barrio_nombre)
+                x=True
+                Barrio_nombre=validarBarrio
+            except Entorno.DoesNotExist:
+                print("El barrio ingresada no existe intente nuevamente") 
+        
         Direccion=input("ingrese la direccion: ")
         Lat=input("ingrese la latitud de la obra: ")
         Lng=input("ingrese la longitud de la obra: ")
@@ -204,7 +244,9 @@ class GestionarObra():
 
 #testear
 Tabla=GestionarObra()
-Tabla.extraer_datos()
-#Tabla.mapear_orm()
-#Tabla.limpiar_datos()
-#Tabla.cargar_datos()
+
+#Tabla.extraer_datos()
+Tabla.mapear_orm()
+Tabla.limpiar_datos()
+Tabla.cargar_datos()
+Tabla.nueva_obra()
