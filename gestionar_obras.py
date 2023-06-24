@@ -1,10 +1,8 @@
-
 from peewee import *
 from modelo_orm import *
 from leer_archivo import *
 
-db = SqliteDatabase('./sistema-de-gestion-de-obras-publicas/obras_urbanas.db')
-
+db = SqliteDatabase('obras_urbanas.db')
 
 class GestionarObra():
 
@@ -23,7 +21,6 @@ class GestionarObra():
     def conectar_db(cls):
         
        db.connect()
-       
 
     @classmethod
     def mapear_orm(cls):
@@ -34,36 +31,37 @@ class GestionarObra():
             exit()
         print("Se han creado la stablas en la base de datos")
 
-
     @classmethod
     def limpiar_datos(cls):
          # Realizar la limpieza de datos nulos y no accesibles en el DataFrame  
         #limpia todas las filas nulas en una sola vez no funciona con esto
-        #cls.df.dropna(inplace=True)
-
-    
+        #cls.df.dropna(inplace=True)    
         
         #limpiar datos nulos     
-        cls.df.dropna(subset = ['tipo'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['descripcion'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['monto_contrato'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['comuna'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['barrio'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['direccion'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['lat'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['lng'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['fecha_inicio'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['fecha_fin_inicial'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['plazo_meses'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['porcentaje_avance'], axis =0, inplace = True)        
-        cls.df.dropna(subset = ['licitacion_oferta_empresa'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['licitacion_anio'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['contratacion_tipo'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['nro_contratacion'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['cuit_contratista'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['beneficiarios'], axis =0, inplace = True)                 
-        cls.df.dropna(subset = ['link_interno'], axis =0, inplace = True)
-        cls.df.dropna(subset = ['pliego_descarga'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['tipo'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['descripcion'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['monto_contrato'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['comuna'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['barrio'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['direccion'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['lat'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['lng'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['fecha_inicio'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['fecha_fin_inicial'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['plazo_meses'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['porcentaje_avance'], axis =0, inplace = True)        
+        # cls.df.dropna(subset = ['licitacion_oferta_empresa'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['licitacion_anio'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['contratacion_tipo'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['nro_contratacion'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['cuit_contratista'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['beneficiarios'], axis =0, inplace = True)                 
+        # cls.df.dropna(subset = ['link_interno'], axis =0, inplace = True)
+        # cls.df.dropna(subset = ['pliego_descarga'], axis =0, inplace = True)
+        
+        limpiar_columnas = ['tipo', 'descripcion', 'monto_contrato', 'comuna', 'barrio', 'direccion', 'lat', 'lng', 'fecha_inicio', 'fecha_fin_inicial', 'plazo_meses', 'porcentaje_avance', 'licitacion_oferta_empresa', 'licitacion_anio', 'contratacion_tipo', 'nro_contratacion', 'cuit_contratista', 'beneficiarios', 'link_interno', 'pliego_descarga']
+        
+        cls.df.dropna(subset = limpiar_columnas, axis =0, inplace = True)
 
         # sacar solo los valores unicos
 
@@ -84,8 +82,6 @@ class GestionarObra():
         df_empresa=cls.df[['licitacion_oferta_empresa','nro_contratacion']]
         df_empresa=df_empresa.drop_duplicates()
         cls.lis_empresa=df_empresa.values
-
-      
 
     @classmethod
     def cargar_datos(cls):
@@ -153,9 +149,6 @@ class GestionarObra():
                 print("Error al insertar un registro en la tabla viakes.", e)
         print("los registros se han persistido en la tabla Obras.")     
 
-    
-        
-
     @classmethod
     def nueva_obra(cls):
        #busca dentro de la tabla entorno el entrono insertado por teclado
@@ -173,8 +166,6 @@ class GestionarObra():
                 print("el Entorno ingresado no coincide con los que se encuentran en la base de datos intente nuevamente")        
 
         Nombre_O="Mary"#input("ingrese el nombre de la obra: ")      
-
-        
         
         #busca dentro de la tabla Tipo de obra el tipo de obra insertada por teclado
         validarTipo=None
@@ -201,7 +192,6 @@ class GestionarObra():
                 area_responsable=validarArea
             except AreaResponsable.DoesNotExist:
                 print("El tipo de area ingresado no existe intente nuevamente")  
-        
        
         Monto_contrato="250000" #input("ingrese Monto de contrato: ")
         Comuna="15"#input("ingrese la comuna: ")
@@ -218,13 +208,9 @@ class GestionarObra():
             except Barrio.DoesNotExist:
                 print("El barrio ingresado no existe intente nuevamente")  
         
-        
-        
         Beneficiarios="25000"#input("ingrese la cantidad de beneficiarios por esta obra: ")
         Link_interno = "sdsdfdsfdsfds"#input("ingrese el link interno: ")
         Pliego_descarga = "dfsfsdfdffdf" #input("ingrese el link pliego descarga: ")
-        
-        
 
         obra = Obra.create(
             
@@ -250,24 +236,72 @@ class GestionarObra():
 
     @classmethod
     def obtener_indicadores(cls):
+        # a. Listado de todas las áreas responsables
+        areas_responsables = AreaResponsable.select()
+        print("Áreas Responsables:")
+        for area in areas_responsables:
+            print(f"- {area.nombre_Responsable}")
 
-        obras_totales = Obra.select().count()
-        obras_finalizadas = Obra.select().where(Obra.etapa == "1").count()
-        obras_en_progreso = Obra.select().where(Obra.etapa != "1").count()
-        totalDedinero= Obra.select(fn.SUM(Obra.monto_contrato)).scalar() 
+        # b. Listado de todos los tipos de obra
+        tipos_obra = TipoObra.select()
+        print("\nTipos de Obra:")
+        for tipo in tipos_obra:
+            print(f"- {tipo.nombre_Tipo}")
 
-        cls.indicadores = {
-            "obras_totales": obras_totales,
-            "obras_finalizadas": obras_finalizadas,
-            "obras_en_progreso": obras_en_progreso,
-            "Total_Dinero_En_Obras":totalDedinero
-            
-            
-        }
-        print(cls.indicadores)
-        return cls.indicadores
+        # c. Cantidad de obras que se encuentran en cada etapa
+        etapas = Etapa.select()
+        print("\nCantidad de obras por etapa:")
+        for etapa in etapas:
+            cantidad = Obra.select().where(Obra.etapa == etapa).count()
+            print(f"- {etapa.nombre_etapa}: {cantidad}")
 
+        # d. Cantidad de obras por tipo de obra
+        print("\nCantidad de obras por tipo de obra:")
+        for tipo in tipos_obra:
+            cantidad = Obra.select().where(Obra.tipo == tipo).count()
+            print(f"- {tipo.nombre_Tipo}: {cantidad}")
+
+        # e. Listado de todos los barrios pertenecientes a las comunas 1, 2 y 3
+        comuna_barrios = {}
+
+        query = (Obra
+                 .select(Obra.comuna, Barrio.nombre_Barrio)
+                 .join(Barrio, on=(Obra.barrio_id == Barrio.id))
+                 .where(Obra.comuna.in_([1, 2, 3]))
+                 .group_by(Obra.comuna, Barrio.nombre_Barrio)
+                 .order_by(Obra.comuna, Barrio.nombre_Barrio))
+        
+        for result in query:
+            comuna = result.comuna
+            barrio = result.barrio.nombre_Barrio
+        
+            if comuna in comuna_barrios:
+                if barrio not in comuna_barrios[comuna]:
+                    comuna_barrios[comuna].append(barrio)
+            else:
+                comuna_barrios[comuna] = [barrio]
+                
+        print("\nListado de los barrios pertenecientes a las comunas 1,2 y 3. En caso de no haber registros, no se mostraran en la pantalla:")        
+        for comuna, barrios in comuna_barrios.items():
+            print(f"Comuna {comuna}: {', '.join(barrios)}")
     
+        #f. Cantidad de obras “Finalizadas” en la comuna 1
+        obras_finalizadas_comuna1 = (
+            Obra.select()
+            .join(Barrio)
+            .join(Etapa, on=(Obra.etapa_id == Etapa.id))
+            .where(Etapa.nombre_etapa == "Finalizada", Obra.comuna == "1")
+            .count()
+        )
+        print(f"\nObras finalizadas en la comuna 1: {obras_finalizadas_comuna1}")
+        
+        # g. Cantidad de obras “Finalizadas” en un plazo menor o igual a 24 meses
+        obras_finalizadas_24_meses = (Obra.select()
+                                          .join(Etapa, on=(Obra.etapa_id == Etapa.id))
+                                          .where(Etapa.nombre_etapa == "Finalizada", Obra.plazo_meses >= 24).count())
+        print(f"\nObras finalizadas en un plazo menor o igual a 24 meses: {obras_finalizadas_24_meses}")
+
+
 
 
 
