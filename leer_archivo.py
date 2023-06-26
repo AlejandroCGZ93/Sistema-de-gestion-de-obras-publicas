@@ -2,7 +2,7 @@ import pandas as pd
 
 def leer_archivo():
      #Leer el archivo CSV 
-        archivo= './sistema-de-gestion-de-obras-publicas/observatorio-de-obras-urbanas.csv'        
+        archivo= 'observatorio-de-obras-urbanas.csv'        
 
         try: 
             df= pd.read_csv(archivo, sep=",")

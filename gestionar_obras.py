@@ -32,32 +32,7 @@ class GestionarObra():
         print("Se han creado la stablas en la base de datos")
 
     @classmethod
-    def limpiar_datos(cls):
-         # Realizar la limpieza de datos nulos y no accesibles en el DataFrame  
-        #limpia todas las filas nulas en una sola vez no funciona con esto
-        #cls.df.dropna(inplace=True)    
-        
-        #limpiar datos nulos     
-        # cls.df.dropna(subset = ['tipo'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['descripcion'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['monto_contrato'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['comuna'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['barrio'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['direccion'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['lat'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['lng'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['fecha_inicio'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['fecha_fin_inicial'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['plazo_meses'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['porcentaje_avance'], axis =0, inplace = True)        
-        # cls.df.dropna(subset = ['licitacion_oferta_empresa'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['licitacion_anio'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['contratacion_tipo'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['nro_contratacion'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['cuit_contratista'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['beneficiarios'], axis =0, inplace = True)                 
-        # cls.df.dropna(subset = ['link_interno'], axis =0, inplace = True)
-        # cls.df.dropna(subset = ['pliego_descarga'], axis =0, inplace = True)
+    def limpiar_datos(cls):        
         
         limpiar_columnas = ['tipo', 'descripcion', 'monto_contrato', 'comuna', 'barrio', 'direccion', 'lat', 'lng', 'fecha_inicio', 'fecha_fin_inicial', 'plazo_meses', 'porcentaje_avance', 'licitacion_oferta_empresa', 'licitacion_anio', 'contratacion_tipo', 'nro_contratacion', 'cuit_contratista', 'beneficiarios', 'link_interno', 'pliego_descarga']
         
@@ -157,7 +132,7 @@ class GestionarObra():
         validarEntorno=None
         encontrado=False
         while not encontrado:
-            Entorno_nombre="Acumar"#input("ingrese el nombre del Entorno: ") 
+            Entorno_nombre=input("ingrese el nombre del Entorno: ") 
             try:
                 validarEntorno=Entorno.get(Entorno.nombre_entorno == Entorno_nombre)
                 encontrado=True
@@ -165,13 +140,13 @@ class GestionarObra():
             except Entorno.DoesNotExist:
                 print("el Entorno ingresado no coincide con los que se encuentran en la base de datos intente nuevamente")        
 
-        Nombre_O="Mary"#input("ingrese el nombre de la obra: ")      
+        Nombre_O=input("ingrese el nombre de la obra: ")      
         
         #busca dentro de la tabla Tipo de obra el tipo de obra insertada por teclado
         validarTipo=None
         x=False
         while not x:
-            Tipo ="Vivienda"# input("Tipo de obra: ")
+            Tipo = input("Tipo de obra: ")
             try:
                 validarTipo=TipoObra.get(TipoObra.nombre_Tipo == Tipo)
                 x=True
@@ -179,28 +154,28 @@ class GestionarObra():
             except TipoObra.DoesNotExist:
                 print("El tipo de obra ingresado no existe intente nuevamente")          
          
-        Descripcion="sjhdfjsyhfyhf"#input("ingrese una descripcion para la obra: ")
+        Descripcion=input("ingrese una descripcion para la obra: ")
         
         #busca dentro de la tabla Area Responsable el area insertada por teclado
         validarArea=None
         m=False
         while not m:
-            area_responsable ="Instituto de la Vivienda"# input("Tipo el area responsable: ")
+            area_responsable = input("Ingrese el area responsable: ")
             try:
                 validarArea=AreaResponsable.get(AreaResponsable.nombre_Responsable == area_responsable)
                 m=True
                 area_responsable=validarArea
             except AreaResponsable.DoesNotExist:
-                print("El tipo de area ingresado no existe intente nuevamente")  
+                print("El area ingresado no existe intente nuevamente")  
        
-        Monto_contrato="250000" #input("ingrese Monto de contrato: ")
-        Comuna="15"#input("ingrese la comuna: ")
+        Monto_contrato=input("ingrese Monto de contrato: ")
+        Comuna=input("ingrese la comuna: ")
 
         #busca dentro de la tabla Area Responsable el area insertada por teclado
         validarBarrio=None
         j=False
         while not j:
-            barrio_nombre = "Villa Devoto"#input("Ingrese el Barrio: ")
+            barrio_nombre = input("Ingrese el Barrio: ")
             try:
                 validarBarrio=Barrio.get(Barrio.nombre_Barrio == barrio_nombre)
                 j=True
@@ -208,12 +183,12 @@ class GestionarObra():
             except Barrio.DoesNotExist:
                 print("El barrio ingresado no existe intente nuevamente")  
         
-        Beneficiarios="25000"#input("ingrese la cantidad de beneficiarios por esta obra: ")
-        Link_interno = "sdsdfdsfdsfds"#input("ingrese el link interno: ")
-        Pliego_descarga = "dfsfsdfdffdf" #input("ingrese el link pliego descarga: ")
+        Beneficiarios=input("ingrese la cantidad de beneficiarios por esta obra: ")
+        Link_interno = input("ingrese el link interno: ")
+        Pliego_descarga =  input("ingrese el link pliego descarga: ")
 
         obra = Obra.create(
-            
+            #aplicamos estos valores al momento de craer la obra ya que al ser claves foraneas no pueden quedar vacias
                 entorno=Entorno_nombre,
                 nombre=Nombre_O,
                 etapa = "Finalizada",
@@ -238,25 +213,25 @@ class GestionarObra():
     def obtener_indicadores(cls):
         # a. Listado de todas las áreas responsables
         areas_responsables = AreaResponsable.select()
-        print("Áreas Responsables:")
+        print("\n 1).Áreas Responsables:")
         for area in areas_responsables:
             print(f"- {area.nombre_Responsable}")
 
         # b. Listado de todos los tipos de obra
         tipos_obra = TipoObra.select()
-        print("\nTipos de Obra:")
+        print("\n 2). Tipos de Obra:")
         for tipo in tipos_obra:
             print(f"- {tipo.nombre_Tipo}")
 
         # c. Cantidad de obras que se encuentran en cada etapa
         etapas = Etapa.select()
-        print("\nCantidad de obras por etapa:")
+        print("\n 3). Cantidad de obras por etapa")
         for etapa in etapas:
             cantidad = Obra.select().where(Obra.etapa == etapa).count()
             print(f"- {etapa.nombre_etapa}: {cantidad}")
 
         # d. Cantidad de obras por tipo de obra
-        print("\nCantidad de obras por tipo de obra:")
+        print("\n 4). Cantidad de obras por tipo de obra:")
         for tipo in tipos_obra:
             cantidad = Obra.select().where(Obra.tipo == tipo).count()
             print(f"- {tipo.nombre_Tipo}: {cantidad}")
@@ -281,9 +256,9 @@ class GestionarObra():
             else:
                 comuna_barrios[comuna] = [barrio]
                 
-        print("\nListado de los barrios pertenecientes a las comunas 1,2 y 3. En caso de no haber registros, no se mostraran en la pantalla:")        
+        print("\n 5).Listado de los barrios pertenecientes a las comunas 1,2 y 3. En caso de no haber registros, no se mostraran en la pantalla:")        
         for comuna, barrios in comuna_barrios.items():
-            print(f"Comuna {comuna}: {', '.join(barrios)}")
+            print(f"\n Comuna {comuna}: {', '.join(barrios)}")
     
         #f. Cantidad de obras “Finalizadas” en la comuna 1
         obras_finalizadas_comuna1 = (
@@ -293,13 +268,13 @@ class GestionarObra():
             .where(Etapa.nombre_etapa == "Finalizada", Obra.comuna == "1")
             .count()
         )
-        print(f"\nObras finalizadas en la comuna 1: {obras_finalizadas_comuna1}")
+        print(f"\n 6). Obras finalizadas en la comuna 1: {obras_finalizadas_comuna1}")
         
         # g. Cantidad de obras “Finalizadas” en un plazo menor o igual a 24 meses
         obras_finalizadas_24_meses = (Obra.select()
                                           .join(Etapa, on=(Obra.etapa_id == Etapa.id))
                                           .where(Etapa.nombre_etapa == "Finalizada", Obra.plazo_meses >= 24).count())
-        print(f"\nObras finalizadas en un plazo menor o igual a 24 meses: {obras_finalizadas_24_meses}")
+        print(f"\n 7). Obras finalizadas en un plazo menor o igual a 24 meses: {obras_finalizadas_24_meses}")
 
 
 

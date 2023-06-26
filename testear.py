@@ -1,11 +1,11 @@
 from gestionar_obras import *
 
 def main():
-    GestionarObra.extraer_datos()
-    GestionarObra.mapear_orm()
-    GestionarObra.conectar_db()
-    GestionarObra.limpiar_datos()
-    GestionarObra.cargar_datos()
+    #GestionarObra.extraer_datos()
+    #GestionarObra.mapear_orm()
+    #GestionarObra.conectar_db()
+    #GestionarObra.limpiar_datos()
+    #GestionarObra.cargar_datos()
     
     
 
@@ -18,6 +18,7 @@ def main():
         opcion = input("Ingrese una opción: ")
 
         if opcion == "1":
+            print("\n=====Inserte los datos para la Obra numero 1=====")
             obra = GestionarObra.nueva_obra()
             obra.nuevo_proyecto()
             obra.save()
@@ -41,6 +42,7 @@ def main():
             obra.finalizar_obra()
             obra.save()
             #Segunda intancia de obra
+            print("\n======Inserte los datos para la Obra numero 2======")
             segunda_obra = GestionarObra.nueva_obra()
             segunda_obra.nuevo_proyecto()
             segunda_obra.save()

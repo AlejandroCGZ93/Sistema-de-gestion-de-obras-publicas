@@ -1,7 +1,7 @@
 from peewee import *
 
 #conexion a la base de dato
-sqlite_db = SqliteDatabase('./sistema-de-gestion-de-obras-publicas/obras_urbanas.db', pragmas={'journal_mode': 'wal'}) 
+sqlite_db = SqliteDatabase('obras_urbanas.db', pragmas={'journal_mode': 'wal'}) 
 
 try:
     sqlite_db.connect()
@@ -127,12 +127,18 @@ class Obra(BaseModel):
         pass
 
     def finalizar_obra(self):
-        self.etapa="Finalizada"
+        etapa=Etapa.get(nombre_etapa="Proyecto")
+        self.etapa=etapa
         self.porcentaje_avance=100
         
 
     def rescindir_obra(self):
-        self.etapa="Recindida"
+        try:
+            etapa=Etapa.get(nombre_etapa="Recindida")
+            self.etapa=etapa
+        except Etapa.DoesNotExist:
+            etapa=Etapa.create(nombre_etapa="Recindida") 
+            self.etapa=etapa   
 
 #no se como hacer el proceso de iniciar proyecto y eso y como siguen los pasos desde ahi
 # como hago para usar estos metodos en testear tengo que llamarlos desde getionar_obras?
